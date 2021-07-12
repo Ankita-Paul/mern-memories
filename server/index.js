@@ -1,9 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import router from "./routes/postsRoutes.js";
 import dotenv from "dotenv";
-
+import router from "./routes/postsRoutes.js";
+import authRouter from "./routes/authRoutes.js"
 
 const app = express();
 dotenv.config();
@@ -29,3 +29,4 @@ mongoose
 mongoose.set("useFindAndModify", false);
 
 app.use("/posts", router);
+app.use("/auth", authRouter);

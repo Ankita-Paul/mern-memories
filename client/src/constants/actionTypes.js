@@ -4,5 +4,7 @@ const actionType = {
   UPDATE: "UPDATE",
   LIKE: "LIKE",
   DELETE: "DELETE",
+  AUTH:"AUTH",
+  LOGOUT:"LOGOUT"
 };
 export default actionType;

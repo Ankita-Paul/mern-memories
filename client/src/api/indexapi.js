@@ -1,26 +1,30 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/posts";
+const API = axios.create({baseURL:"http://localhost:5000"});
 
-export const fetchData = () => axios.get(url);
+API.interceptors.request.use((req)=>{
+  if(localStorage.getItem("profile")){
+    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token}` 
+  }
+  return req;
+})
+
+export const fetchData = () => API.get("/posts");
 export const createPost = (newPost) => {
-  return axios.post(url, newPost);
+  return API.post("/posts", newPost);
 };
 
 export const updatePost = (id, post) => {
-  return axios.patch(`${url}/${id}`, post);
+  return API.patch(`/posts/${id}`, post);
 };
 export const deletePost = (id) => {
-  axios
-    .delete(`${url}/${id}`)
-    .then((res) => console.log("res:", res))
-    .catch((err) => console.log(err));
-  return axios.delete(`${url}/${id}`);
+  
+  return API.delete(`/posts/${id}`);
 };
 export const likeCountIncrease = (id) => {
-  axios
-    .patch(`${url}/${id}/likePost`)
-    .then((res) => console.log("like count result: ", res))
-    .catch((err) => console.log(err));
-  return axios.patch(`${url}/${id}/likePost`);
+ 
+  return API.patch(`/posts/${id}/likePost`);
 };
+
+export const signin = (formData) => API.post(`/auth/signin` , formData)
+export const signup = (formData) => API.post(`/auth/signup` , formData)

@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 //get the current id
 
 const Form = ({ setCurrentId, currentId }) => {
+  const user = JSON.parse(localStorage.getItem("profile"));
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
   );
@@ -15,7 +16,6 @@ const Form = ({ setCurrentId, currentId }) => {
   const dispatch = useDispatch();
 
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
@@ -29,7 +29,6 @@ const Form = ({ setCurrentId, currentId }) => {
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
@@ -39,14 +38,24 @@ const Form = ({ setCurrentId, currentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      console.log("its updatepost:",currentId);
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
     } else {
-      console.log("its create post");
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
     }
     clear();
   };
+
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography align="center" variant="h6">
+          Please Sign In to Create Memories and Like Other's Memories
+        </Typography>
+      </Paper>
+    );
+  }
 
   return (
     <Paper className={classes.paper}>
@@ -60,7 +69,7 @@ const Form = ({ setCurrentId, currentId }) => {
           {currentId ? "Editing" : "Creating"} a Memory
         </Typography>
 
-        <TextField
+        {/* <TextField
           name="creator"
           variant="outlined"
           label="Creator"
@@ -70,7 +79,7 @@ const Form = ({ setCurrentId, currentId }) => {
             setPostData((preVal) => ({ ...preVal, creator }));
           }}
           value={postData.creator}
-        />
+        /> */}
 
         <TextField
           name="title"
@@ -99,7 +108,7 @@ const Form = ({ setCurrentId, currentId }) => {
         <TextField
           name="tags"
           variant="outlined"
-          label="tags"
+          label="Tags(coma separated)"
           fullWidth
           onChange={(e) => {
             const tags = e.target.value;

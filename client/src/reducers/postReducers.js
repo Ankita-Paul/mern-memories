@@ -4,7 +4,7 @@ const  {
   CREATE,
   UPDATE,
   LIKE,
-  DELETE,
+  DELETE 
 } = actionType;
 
 const reducer = (posts = [], action) => {
